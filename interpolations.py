@@ -1,3 +1,5 @@
+import math
+
 from solver import solve_LU
 
 
@@ -31,6 +33,23 @@ def select_nodes(x, y, num_nodes):
     indices = [i * step for i in range(num_nodes - 1)] + [len(x) - 1]
     x_values = [x[i] for i in indices]
     y_values = [y[i] for i in indices]
+    return x_values, y_values
+
+
+def select_chebyshev_nodes(x, y, num_nodes):
+    n = num_nodes - 1
+    chebyshev_nodes = [math.cos(math.pi * (2 * k + 1) / (2 * n + 2)) for k in range(n + 1)]
+
+    x_min, x_max = min(x), max(x)
+    rescaled_nodes = [0.5 * (x_max - x_min) * (node + 1) + x_min for node in chebyshev_nodes]
+
+    x_values = []
+    y_values = []
+    for node in rescaled_nodes:
+        closest_index = min(range(len(x)), key=lambda i: abs(x[i] - node))
+        x_values.append(x[closest_index])
+        y_values.append(y[closest_index])
+
     return x_values, y_values
 
 #source for splines:
